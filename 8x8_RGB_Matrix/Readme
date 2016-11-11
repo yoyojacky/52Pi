@@ -1,0 +1,10 @@
+#After power on and login to system. you can open a terminal and edit /boot/config.txt file to enable SPI function.
+sudo vim.tiny /boot/config.txt 
+#and add this two parameters :
+device_tree=bcm2710-rpi-3-b.dtb
+dtparam=spi=on
+#Reboot your RPi
+#login and compile matrix.c file and run it .
+gcc -o matrix matrix.c -lwiringPi 
+sudo ./matrix
+
