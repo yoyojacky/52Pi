@@ -1,0 +1,34 @@
+#Description: 
+These displays are small, only about 1" diameter, but very readable due to the high contrast of an OLED display. 
+This display is made of 128x64 individual yellow and blue OLED pixels, each one is turned on or off by the controller chip.
+Because the display makes its own light, no backlight is required. 
+This reduces the power required to run the OLED.
+This breakout can be used with either an SPI interface
+The design is completely 3.3V-ready, with an onboard regulator and built in boost converter.
+The SSD1306 embeds with contrast control, display RAM and oscillator, which reduces the number of
+external components and power consumption. 
+It has 256-step brightness control.
+it supports Raspberry Pi A, A+,B,B+,2B,3B.
+##########################################
+For Raspberry Pi A,A+,B,B+:[edit]
+First login, and download driver:
+# git clone https://github.com/hallard/ArduiPi_SSD1306
+
+Compile it and run:
+# cd ArduiPi_SSD1306/ 
+# sudo make 
+# cd example/ 
+# sudo make 
+# sudo ./oled_demo 
+
+############################################
+For Raspberry Pi 2B, 3B:[edit]
+First login, and download driver:
+# git clone -b ArduiPi_OLED https://github.com/yoyojacky/libssd1306
+
+Compile it and run:
+# cd libssd1306/ 
+# sudo make 
+# cd example/
+# sudo make
+# sudo ./oled_demo
