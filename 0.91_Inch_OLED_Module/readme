@@ -1,0 +1,22 @@
+These displays are very tiny, you can use it as your battery status display and you can make it a mp3 lyrics display. 
+This display is made of 128x32 individual yellow and blue OLED pixels, each one is turned on or off by the controller chip.
+Because the display makes its own light, no backlight is required. 
+There are little power require to run the OLED.
+This breakout can be used with an I2C interface
+it supports Raspberry Pi A, A+,B,B+,2B,3B.
+First of all, you should turn on I2C function on your Pi by editing /boot/config.txt file.
+# sudo vim.tiny /boot/config.txt 
+make sure you can find this parameter:
+# dtparam=i2c_arm=on
+And don't forget to reboot your Pi.
+Login your Pi and download driver:
+# git clone -b ArduiPi_OLED https://github.com/yoyojacky/libssd1306
+
+Compile it and run:
+# cd libssd1306/ 
+# sudo make 
+# cd example/
+# sudo make
+# sudo ./oled_demo -o 2 
+if you need help, you can just use this command:
+# sudo ./oled_demo -h 
