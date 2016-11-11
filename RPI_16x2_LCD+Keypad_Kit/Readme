@@ -1,0 +1,37 @@
+#RPI 16x2 LCD+Keypad Kit SKU:Z-0019
+It's a LCD display which can show two lines and 16 characters on it. and it easy to use a blue and white 16x2 Character LCD.
+It's based on I2c protocol and it can communicate with your Pi with less wire. 
+With this in mind, we wanted to make it easier for people to get these LCD into their projects so we devised a Pi plate that lets you control a 16x2 Character LCD,
+up to 3 led pins(rgb led) AND 5 keypad pins using only the two I2C pins on the R-Pi! 
+The best part is you don't really lose those two pins either, since you can stick i2c-based sensors, RTCs, etc and have them share the I2C bus.
+This is a super slick way to add a display without all the wiring hassle. This pi plate is perfect for when you want to build a stand-alone project with its own user interface. 
+The 4 directional buttons plus select button allows basic control without having to attach a bulky computer.
+The plate is designed for both Revision 1 and Revision 2 Raspberry Pi's. It uses the I2C (SDA/SCL) pins. 
+To keep them from shorting against the metal, a piece of electrical tape must be placed onto the USB ports.
+Attention:due to the new version of MCP23017, may not support the extended pull-up resistor on the IO.and LCD16x2+Keypad not support for Pi 3.
+Setup your Pi with I2C tool.
+#############################
+# sudo apt-get install python-smbus 
+# sudo apt-get install i2c-tools 
+# sudo i2cdetect -y 0 (if you are using a version 1 Raspberry Pi) 
+# sudo i2cdetect -y 1 (if you are using a version 2 Raspberry Pi) 
+###########INSTALL WIRINGPI############
+# sudo apt-get install git-core 
+# git clone git://git.drogon.net/wiringPi
+# cd wiringPi
+# ./build
+############TESTING###########
+# gpio -v
+# gpio readall
+############# Modify /etc/modules file ##########
+# sudo nano /etc/modules 
+# i2c-bcm2708 
+# i2c-dev
+############# Edit /etc/modprobe.d/raspi-blacklist.conf file ##########
+# sudo nano /etc/modprobe.d/raspi-blacklist.conf
+# blacklist spi-bcm2708
+# blacklist i2c-bcm2708
+######### Compile this C code and run it ########
+# sudo gcc mylcd1602.c /home/pi/wiringPi/devLib/lcd.o -lwiringPi -o mylcd1602 
+# sudo ./mylcd1602 
+################# Finished ###############
