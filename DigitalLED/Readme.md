@@ -1,4 +1,4 @@
-= How to use this shell script =
+=How to use this shell script=
 # Download the script.
 * git clone https://github.com/yoyojacky/52Pi.git
 # Give the execute rights to it.
