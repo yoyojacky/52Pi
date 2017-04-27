@@ -1,7 +1,7 @@
 # 52Pi Technology 
 ## Just follow my commands to drive your modules that from 52Pi, Just for fun!
-* 1.At the first, you should power on your Raspberry Pi and log in to it.
-* 2.Open a terminal and typing this command :
+    1.At the first, you should power on your Raspberry Pi and log in to it.
+    2.Open a terminal and typing this command :
     #sudo apt-get update
     #sudo apt-get upgrade 
     #sudo apt-get -y install git-core 
