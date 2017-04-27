@@ -28,6 +28,23 @@ elif [ $result -eq 255 ]; then
 fi
 }
 
+# do calibration.
+calibrate(){
+  install_packages
+  cd /home/pi
+  wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
+  unzip /home/pi/Edid.dat.zip
+  sudo mv -f /home/pi/edid.dat /boot/
+  git clone https://github.com/tias/xinput_calibrator.git
+  cd /home/pi/xinput_calibrator/
+  sudo bash autogen.sh
+  sudo make
+  sudo make install
+  sudo mkdir -p /etc/X11/xorg.conf.d/
+  sudo DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
+  sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
+}
+
 #Install some packages for touch screen calibration.
 install_packages(){
   sudo apt-get update
@@ -57,19 +74,7 @@ R1)
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_edid_file=1' /boot/config.txt
-  install_packages
-  cd /home/pi
-  wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
-  unzip /home/pi/Edid.dat.zip
-  sudo mv -f /home/pi/edid.dat /boot/
-  git clone https://github.com/tias/xinput_calibrator.git
-  cd /home/pi/xinput_calibrator/
-  sudo bash autogen.sh
-  sudo make
-  sudo make install
-  sudo mkdir -p /etc/X11/xorg.conf.d/
-  FRAMEBUFFER=/dev/fb1 DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
-  sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
+  calibrate
    ;;
 R2)
   sudo sed -i '/^#.*framebuffer.*/s/^#//' /boot/config.txt
@@ -82,16 +87,19 @@ R2)
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
-   ;;
+  calibrate
+     ;;
 *)
 exit 255
 esac
 }
 
+#Display the configuration of /boot/config.txt file.
 show_config_details(){
 dialog --backtitle "GeeekPi Touch Screen Calibrator Configure Panel" --textbox "/boot/config.txt" 20 80
 }
 
+#Clear the screen buffer when exit the script.
 clear_window(){
 dialog --msgbox "Configuration is compelete!" 20 80 --begin 10 70 --yesno "Do you want to reboot your system?" 20 60
 if [ $? -eq 0 ];then
@@ -101,11 +109,12 @@ elif [ $? -eq 255 ];then
 fi
 dialog --clear
 }
-# Call greeting and yesno.
+# Call greeting and yesno,when it's done, clear all the temp files.
 greeting
 yesno
-show_details
+show_config_details
+sudo rm -rf .select
+sudo rm -rf __MAC*
 clear_window
-rm -rf .select
 clear
 ##End of file##
