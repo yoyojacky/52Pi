@@ -42,7 +42,7 @@ calibrate(){
   sudo make install
   sudo mkdir -p /etc/X11/xorg.conf.d/
   sudo DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
-  sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
+#  sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
 }
 
 #Install some packages for touch screen calibration.
@@ -58,7 +58,7 @@ install_packages(){
 change_Calibrator(){
 dialog --clear --backtitle "GeeekPi Touch Screen Calibrator Configure Panel" \
 --title "Calibrator select" \
---radiolist "Please select Calibrator of your screen" 20 80 30 R1 "5inch 800x480 GPIO Touch Screen" on R2 "7inch 800x480 Touch Screen" off 2>.select
+--radiolist "Please select Calibrator of your screen" 20 80 30 R1 "5inch 800x480 GPIO Touch Screen" on R2 "7inch 800x480 Touch Screen" off R3 "7inch 1024x600 Touch Screen" off 2>.select
 RES_NUM=$(cat .select)
 case $RES_NUM in
 R1)
@@ -89,6 +89,9 @@ R2)
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
   calibrate
      ;;
+R3) 
+  calibrate
+    ;; 
 *)
 exit 255
 esac
