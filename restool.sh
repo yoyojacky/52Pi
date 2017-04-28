@@ -5,6 +5,8 @@
 #
 # clear screen.
 clear
+#install dialog package
+sudo apt-get install dialog
 
 # Funciton greeting.
 greeting(){
