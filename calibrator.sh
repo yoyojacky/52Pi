@@ -6,6 +6,15 @@
 # clear screen.
 clear
 
+#Install some packages for touch screen calibration.
+install_packages(){
+  sudo apt-get update
+  for x in xinput-calibrator xserver-xorg-input-evdev libx11-dev libxext-dev x11proto-input-dev evtest dh-autoreconf libts-bin libxi-dev
+     do
+        sudo apt-get -y install $x
+     done
+}
+
 # Funciton greeting.
 greeting(){
 dialog --backtitle "GeeekPi Touch Screen Calibrator Configure Panel" \
@@ -35,23 +44,15 @@ calibrate(){
   wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
   unzip /home/pi/Edid.dat.zip
   sudo mv -f /home/pi/edid.dat /boot/
-  git clone https://github.com/tias/xinput_calibrator.git
-  cd /home/pi/xinput_calibrator/
-  sudo bash autogen.sh
-  sudo make
-  sudo make install
-  sudo mkdir -p /etc/X11/xorg.conf.d/
-  sudo DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
-#  sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
-}
-
-#Install some packages for touch screen calibration.
-install_packages(){
-  sudo apt-get update
-  for x in xinput libx11-dev libxext-dev x11proto-input-dev evtest dh-autoreconf libts-bin libxi-dev
-     do
-        sudo apt-get -y install $x
-     done
+  sudo mv /usr/share/X11/xorg.conf.d/10-evdev.conf /usr/share/X11/xorg.conf.d/45-evdev.conf
+  #git clone https://github.com/tias/xinput_calibrator.git
+  #cd /home/pi/xinput_calibrator/
+  #sudo bash autogen.sh
+  #sudo make
+  #sudo make install
+  #sudo mkdir -p /etc/X11/xorg.conf.d/
+  #sudo DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
+  #sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
 }
 
 #Define a function to setup.
