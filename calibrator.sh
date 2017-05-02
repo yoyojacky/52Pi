@@ -5,10 +5,15 @@
 #
 # clear screen.
 clear
+install_basic_package(){
+  echo -n "Updating yours system and installing basic_packages,please wait..."
+  sudo apt-get update 
+  sudo apt-get install -y dialog
+  echo -n "Updating finished!"
+}
 
 #Install some packages for touch screen calibration.
 install_packages(){
-  sudo apt-get update
   for x in xinput-calibrator xserver-xorg-input-evdev libx11-dev libxext-dev x11proto-input-dev evtest dh-autoreconf libts-bin libxi-dev
      do
         sudo apt-get -y install $x
@@ -50,8 +55,14 @@ calibrate(){
     sudo rm /etc/X11/xorg.conf.d/99-calibration.conf
   fi
   xinput_calibrator > /tmp/touch.conf
-  sudo sh -c "sed '1,7d' /tmp/touch.conf >  /etc/X11/xorg.conf.d/99-calibration.conf"
-  export -n DISPLAY
+  res=$?
+  if [ $? -eq 0 ]; then
+    sudo sh -c "sed '1,7d' /tmp/touch.conf >  /etc/X11/xorg.conf.d/99-calibration.conf"
+    export -n DISPLAY
+  else
+    echo "The calibration process does not finished properly, please try again!" 
+    sudo bash /home/pi/52Pi/calibrator.sh
+  fi
   #git clone https://github.com/tias/xinput_calibrator.git
   #cd /home/pi/xinput_calibrator/
   #sudo bash autogen.sh
@@ -121,6 +132,7 @@ fi
 dialog --clear
 }
 # Call greeting and yesno,when it's done, clear all the temp files.
+install_basic_package
 greeting
 yesno
 show_config_details
