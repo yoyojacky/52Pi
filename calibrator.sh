@@ -45,10 +45,6 @@ fi
 # do calibration.
 calibrate(){
   install_packages
-  cd /home/pi
-  wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
-  unzip /home/pi/Edid.dat.zip
-  sudo mv -f /home/pi/edid.dat /boot/
   sudo mv /usr/share/X11/xorg.conf.d/10-evdev.conf /usr/share/X11/xorg.conf.d/45-evdev.conf
   export DISPLAY=:0.0
   if [ -f /etc/X11/xorg.conf.d/99-calibration.conf ]; then
@@ -63,14 +59,6 @@ calibrate(){
     echo "The calibration process does not finished properly, please try again!" 
     sudo bash /home/pi/52Pi/calibrator.sh
   fi
-  #git clone https://github.com/tias/xinput_calibrator.git
-  #cd /home/pi/xinput_calibrator/
-  #sudo bash autogen.sh
-  #sudo make
-  #sudo make install
-  #sudo mkdir -p /etc/X11/xorg.conf.d/
-  #sudo DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
-  #sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
 }
 
 #Define a function to setup.
@@ -92,7 +80,6 @@ R1)
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
-  sudo sed -i '/hdmi_force/a\hdmi_edid_file=1' /boot/config.txt
   calibrate
    ;;
 R2)
