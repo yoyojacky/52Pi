@@ -8,6 +8,14 @@ clear
 #install dialog package
 sudo apt-get install dialog
 
+#Remove the puple line on the left of the screen.
+remove_puple_line(){
+  cd /home/pi
+  wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
+  unzip /home/pi/Edid.dat.zip
+  sudo mv -f /home/pi/edid.dat /boot/
+}
+
 # Funciton greeting.
 greeting(){
 dialog --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
@@ -37,6 +45,7 @@ dialog --clear --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
 RES_NUM=$(cat .select)
 case $RES_NUM in
 R1)
+  remove_puple_line
   sudo sed -i '/^#.*framebuffer.*/s/^#//' /boot/config.txt
   sudo sed -i '/^framebuffer_width.*/s/framebuffer_width.*/framebuffer_width=800/' /boot/config.txt
   sudo sed -i '/^framebuffer_height.*/s/framebuffer_height.*/framebuffer_height=480/' /boot/config.txt
