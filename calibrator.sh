@@ -45,6 +45,13 @@ calibrate(){
   unzip /home/pi/Edid.dat.zip
   sudo mv -f /home/pi/edid.dat /boot/
   sudo mv /usr/share/X11/xorg.conf.d/10-evdev.conf /usr/share/X11/xorg.conf.d/45-evdev.conf
+  export DISPLAY=:0.0
+  if [ -f /etc/X11/xorg.conf.d/99-calibration.conf ]; then
+    sudo rm /etc/X11/xorg.conf.d/99-calibration.conf
+  fi
+  xinput_calibrator > /tmp/touch.conf
+  sudo sh -c "sed '1,7d' /tmp/touch.conf >  /etc/X11/xorg.conf.d/99-calibration.conf"
+  export -n DISPLAY
   #git clone https://github.com/tias/xinput_calibrator.git
   #cd /home/pi/xinput_calibrator/
   #sudo bash autogen.sh
