@@ -81,7 +81,7 @@ R1)
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
   sudo sed -i '/hdmi_cvt/a\device_tree=bcm2710-rpi-3-b.dtb' /boot/config.txt
-  sudo sed -i '/device_tree/a\dtoverlay=ads7856,penirq=22,speed=100000,xohms=150" /boot/config.txt
+  sudo sed -i '/device_tree/a\dtoverlay=ads7856,penirq=22,speed=100000,xohms=150' /boot/config.txt
   calibrate
    ;;
 R2)
