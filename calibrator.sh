@@ -9,11 +9,11 @@ install_basic_package(){
   echo -n "Updating yours system and installing basic_packages,please wait..."
   sudo apt-get update 
   sudo apt-get install -y dialog
-  echo -n "Updating finished!"
 }
 
 #Install some packages for touch screen calibration.
 install_packages(){
+  echo -e "\033[32mInstall Calibration packages,Please wait...\033[0m"
   for x in xinput-calibrator xserver-xorg-input-evdev libx11-dev libxext-dev x11proto-input-dev evtest dh-autoreconf libts-bin libxi-dev
      do
         sudo apt-get -y install $x
@@ -36,7 +36,6 @@ dialog --backtitle "GeeekPi Touch Screen Calibrator Configure Panel" \
 result=$?
 if [ $result -eq 0 ]; then
   change_Calibrator;
-  show_config_details;
 elif [ $result -eq 255 ]; then
  exit 255;
 fi
@@ -76,13 +75,13 @@ R1)
   sudo sed -i '/hdmi_group.*/d' /boot/config.txt
   sudo sed -i '/hdmi_mode.*/d' /boot/config.txt
   sudo sed -i '/hdmi_cvt.*/d' /boot/config.txt
+  sudo sed -i '/device_tree.*/d' /boot/config.txt 
+  sudo sed -i '/dtoverlay=ads7846.*/d' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
-  sudo sed -i '/hdmi_cvt/a\device_tree' /boot/config.txt
-  sudo sed -i '/device_tree/s/device_tree.*/device_tree=bcm2710-rpi-3-b.dtb/' /boot/config.txt
-  sudo sed -i '/dtoverlay=ads7846,penirq=22,speed=100000,xohms=150/d' /boot/config.txt
-  sudo sed -i '/device_tree/a\dtoverlay=ads7846.*/dtoverlay=ads7846,penirq=22,speed=100000,xohms=150' /boot/config.txt
+  sudo sed -i '/hdmi_group/a\device_tree=bcm2710-rpi-3-b.dtb/' /boot/config.txt
+  sudo sed -i '/device_tree=.*/a\dtoverlay=ads7846,penirq=22,speed=100000,xohms=150' /boot/config.txt
   sudo sed -i '/^#dtparam=spi.*/s/#//' /boot/config.txt 
   calibrate
    ;;
