@@ -32,7 +32,6 @@ dialog --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
 result=$?
 if [ $result -eq 0 ]; then
   change_resolution;
-  show_details;
 elif [ $result -eq 255 ]; then
  exit 255;
 fi
@@ -53,6 +52,7 @@ R1)
   sudo sed -i '/hdmi_group.*/d' /boot/config.txt
   sudo sed -i '/hdmi_mode.*/d' /boot/config.txt
   sudo sed -i '/hdmi_cvt.*/d' /boot/config.txt
+  sudo sed -i '/hdmi_edid_file.*/d' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
@@ -117,5 +117,7 @@ yesno
 show_details
 clear_window
 rm -rf .select
+sudo rm -rf /home/pi/Edid.*
+sudo rm -rf /home/pi/__MAC*
 clear
 ##End of file##
