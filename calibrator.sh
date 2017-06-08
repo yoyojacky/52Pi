@@ -99,6 +99,8 @@ R2)
   calibrate
      ;;
 R3) 
+  sudo sed -i '/^framebuffer_width.*/s/framebuffer_width.*/framebuffer_width=1024/' /boot/config.txt
+  sudo sed -i '/^framebuffer_height.*/s/framebuffer_height.*/framebuffer_height=600/' /boot/config.txt
   calibrate
     ;; 
 *)
