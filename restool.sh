@@ -8,6 +8,14 @@ clear
 #install dialog package
 sudo apt-get install dialog
 
+#Remove the puple line on the left of the screen.
+remove_puple_line(){
+  cd /home/pi
+  wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
+  unzip /home/pi/Edid.dat.zip
+  sudo mv -f /home/pi/edid.dat /boot/
+}
+
 # Funciton greeting.
 greeting(){
 dialog --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
@@ -24,7 +32,6 @@ dialog --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
 result=$?
 if [ $result -eq 0 ]; then
   change_resolution;
-  show_details;
 elif [ $result -eq 255 ]; then
  exit 255;
 fi
@@ -37,6 +44,7 @@ dialog --clear --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
 RES_NUM=$(cat .select)
 case $RES_NUM in
 R1)
+  remove_puple_line
   sudo sed -i '/^#.*framebuffer.*/s/^#//' /boot/config.txt
   sudo sed -i '/^framebuffer_width.*/s/framebuffer_width.*/framebuffer_width=800/' /boot/config.txt
   sudo sed -i '/^framebuffer_height.*/s/framebuffer_height.*/framebuffer_height=480/' /boot/config.txt
@@ -44,9 +52,11 @@ R1)
   sudo sed -i '/hdmi_group.*/d' /boot/config.txt
   sudo sed -i '/hdmi_mode.*/d' /boot/config.txt
   sudo sed -i '/hdmi_cvt.*/d' /boot/config.txt
+  sudo sed -i '/hdmi_edid_file.*/d' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
-    sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
+  sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
+  sudo sed -i '/hdmi_force/a\hdmi_edid_file=1' /boot/config.txt
    ;;
 R2)
   sudo sed -i '/^#.*framebuffer.*/s/^#//' /boot/config.txt
@@ -107,5 +117,7 @@ yesno
 show_details
 clear_window
 rm -rf .select
+sudo rm -rf /home/pi/Edid.*
+sudo rm -rf /home/pi/__MAC*
 clear
 ##End of file##

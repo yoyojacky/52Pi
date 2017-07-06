@@ -5,6 +5,20 @@
 #
 # clear screen.
 clear
+install_basic_package(){
+  echo -n "Updating yours system and installing basic_packages,please wait..."
+  sudo apt-get update 
+  sudo apt-get install -y dialog
+}
+
+#Install some packages for touch screen calibration.
+install_packages(){
+  echo -e "\033[32mInstall Calibration packages,Please wait...\033[0m"
+  for x in xinput-calibrator xserver-xorg-input-evdev libx11-dev libxext-dev x11proto-input-dev evtest dh-autoreconf libts-bin libxi-dev
+     do
+        sudo apt-get -y install $x
+     done
+}
 
 # Funciton greeting.
 greeting(){
@@ -22,7 +36,6 @@ dialog --backtitle "GeeekPi Touch Screen Calibrator Configure Panel" \
 result=$?
 if [ $result -eq 0 ]; then
   change_Calibrator;
-  show_config_details;
 elif [ $result -eq 255 ]; then
  exit 255;
 fi
@@ -31,27 +44,20 @@ fi
 # do calibration.
 calibrate(){
   install_packages
-  cd /home/pi
-  wget http://wiki.52pi.com/images/a/af/Edid.dat.zip
-  unzip /home/pi/Edid.dat.zip
-  sudo mv -f /home/pi/edid.dat /boot/
-  git clone https://github.com/tias/xinput_calibrator.git
-  cd /home/pi/xinput_calibrator/
-  sudo bash autogen.sh
-  sudo make
-  sudo make install
-  sudo mkdir -p /etc/X11/xorg.conf.d/
-  sudo DISPLAY=:0.0 xinput_calibrator > /etc/X11/xorg.conf.d/99-calibration.conf
-#  sudo sed -i '1,7s/^/#/' /etc/X11/xorg.conf.d/99-calibration.conf
-}
-
-#Install some packages for touch screen calibration.
-install_packages(){
-  sudo apt-get update
-  for x in xinput libx11-dev libxext-dev x11proto-input-dev evtest dh-autoreconf libts-bin libxi-dev
-     do
-        sudo apt-get -y install $x
-     done
+  sudo mv /usr/share/X11/xorg.conf.d/10-evdev.conf /usr/share/X11/xorg.conf.d/45-evdev.conf
+  export DISPLAY=:0.0
+  if [ -f /etc/X11/xorg.conf.d/99-calibration.conf ]; then
+    sudo rm /etc/X11/xorg.conf.d/99-calibration.conf
+  fi
+  xinput_calibrator > /tmp/touch.conf
+  res=$?
+  if [ $? -eq 0 ]; then
+    sudo sh -c "sed '1,7d' /tmp/touch.conf >  /etc/X11/xorg.conf.d/99-calibration.conf"
+    export -n DISPLAY
+  else
+    echo "The calibration process does not finished properly, please try again!" 
+    sudo bash /home/pi/52Pi/calibrator.sh
+  fi
 }
 
 #Define a function to setup.
@@ -69,11 +75,14 @@ R1)
   sudo sed -i '/hdmi_group.*/d' /boot/config.txt
   sudo sed -i '/hdmi_mode.*/d' /boot/config.txt
   sudo sed -i '/hdmi_cvt.*/d' /boot/config.txt
-  sudo sed -i '/hdmi_edid_file.*/d' /boot/config.txt
+  sudo sed -i '/device_tree.*/d' /boot/config.txt 
+  sudo sed -i '/dtoverlay=ads7846.*/d' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
-  sudo sed -i '/hdmi_force/a\hdmi_edid_file=1' /boot/config.txt
+  sudo sed -i '/hdmi_group/a\device_tree=bcm2710-rpi-3-b.dtb' /boot/config.txt
+  sudo sed -i '/device_tree=.*/a\dtoverlay=ads7846,penirq=22,speed=100000,xohms=150' /boot/config.txt
+  sudo sed -i '/^#dtparam=spi.*/s/#//' /boot/config.txt 
   calibrate
    ;;
 R2)
@@ -90,6 +99,8 @@ R2)
   calibrate
      ;;
 R3) 
+  sudo sed -i '/^framebuffer_width.*/s/framebuffer_width.*/framebuffer_width=1024/' /boot/config.txt
+  sudo sed -i '/^framebuffer_height.*/s/framebuffer_height.*/framebuffer_height=600/' /boot/config.txt
   calibrate
     ;; 
 *)
@@ -113,11 +124,13 @@ fi
 dialog --clear
 }
 # Call greeting and yesno,when it's done, clear all the temp files.
+install_basic_package
 greeting
 yesno
 show_config_details
 sudo rm -rf .select
-sudo rm -rf __MAC*
+sudo rm -rf /home/pi/__MAC*
+sudo rm -rf /home/pi/Edid.*
 clear_window
 clear
 ##End of file##
