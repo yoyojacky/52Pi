@@ -40,7 +40,7 @@ fi
 change_resolution(){
 dialog --clear --backtitle "GeeekPi Touch Screen Resolution Configure Panel" \
 --title "Resolution select" \
---radiolist "Please select resolution of your screen" 20 80 30 R1 "5inch 800x480" on R2 "7inch 800x480" off R3 "7inch 1024x600" off R4 "7inch 1280x800" off  2>.select
+--radiolist "Please select resolution of your screen" 20 80 30 R1 "5inch 800x480" on R2 "7inch 800x480" off R3 "7inch 1024x600" off R4 "7inch 1280x800" off R5 "5inch 800x480 Capacitive" off 2>.select
 RES_NUM=$(cat .select)
 case $RES_NUM in
 R1)
@@ -92,6 +92,21 @@ R4)
   sudo sed -i '/hdmi_mode.*/d' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
   sudo sed -i '/hdmi_force/a\hdmi_mode=28' /boot/config.txt
+   ;;
+R5)
+  remove_puple_line
+  sudo sed -i '/^#.*framebuffer.*/s/^#//' /boot/config.txt
+  sudo sed -i '/^framebuffer_width.*/s/framebuffer_width.*/framebuffer_width=800/' /boot/config.txt
+  sudo sed -i '/^framebuffer_height.*/s/framebuffer_height.*/framebuffer_height=480/' /boot/config.txt
+  sudo sed -i '/hdmi_force_hotplug/s/^#//' /boot/config.txt
+  sudo sed -i '/hdmi_group.*/d' /boot/config.txt
+  sudo sed -i '/hdmi_mode.*/d' /boot/config.txt
+  sudo sed -i '/hdmi_cvt.*/d' /boot/config.txt
+  sudo sed -i '/hdmi_edid_file.*/d' /boot/config.txt
+  sudo sed -i '/hdmi_force/a\hdmi_group=2' /boot/config.txt
+  sudo sed -i '/hdmi_force/a\hdmi_mode=87' /boot/config.txt
+  sudo sed -i '/hdmi_force/a\hdmi_cvt 800 480 60 6 0 0 0' /boot/config.txt
+  sudo sed -i '/hdmi_force/a\hdmi_edid_file=1' /boot/config.txt
    ;;
 *)
 exit 255
